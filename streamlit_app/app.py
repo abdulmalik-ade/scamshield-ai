@@ -237,7 +237,7 @@ def render_result(res: dict):
 with st.sidebar:
     st.markdown("### 🛡️ Quick Safety Reminders")
     st.write("- Banks and telecoms won't ask for your PIN, OTP, BVN, or NIN via a random link.")
-    st.write("- Be extra careful with urgent "account blocked" or "you won a prize" alerts.")
+    st.write("- Be extra careful with urgent 'account blocked' or 'you won a prize' alerts.")
     st.write("- When in doubt, open your official app or browser directly.")
 
     st.markdown("---")
