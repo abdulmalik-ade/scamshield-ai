@@ -1,4 +1,3 @@
-import json
 import re
 from pathlib import Path
 import joblib
@@ -12,28 +11,27 @@ st.set_page_config(
     layout="wide",
 )
 
-# --- Creator Contact Details (Update these with your live links) ---
-CREATOR_NAME = "Abdulmalik"
-PORTFOLIO_URL = "https://github.com/abdulmalik-ade.github.io"
+# --- Creator Contact Details ---
+CREATOR_NAME = "Abdulmalik Tajudeen"
+PORTFOLIO_URL = "https://abdulmalik-ade.github.io"
 LINKEDIN_URL = "https://www.linkedin.com/in/abdulmalik-tajudeen-86602b38b/"
-#CONTACT_EMAIL = "abdulmalik@example.com"
+CONTACT_EMAIL = "abdulmaliktajudeen5@gmail.com"
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 MODELS_DIR = BASE_DIR / "models"
 SMS_MODEL_PATH = MODELS_DIR / "scamshield_sms_model.joblib"
 URL_MODEL_PATH = MODELS_DIR / "scamshield_url_model.joblib"
-META_PATH = MODELS_DIR / "scamshield_metadata.json"
 
 st.markdown(
     """
     <style>
         .hero-box {
-            padding: 1.35rem 1.5rem;
+            padding: 1.4rem 1.6rem;
             border-radius: 14px;
             background: linear-gradient(135deg, #102a43 0%, #1d3557 100%);
             color: #ffffff;
-            margin-bottom: 1.2rem;
-            border: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 1.25rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
         .hero-box h1 {
             margin: 0 0 0.35rem 0;
@@ -49,7 +47,7 @@ st.markdown(
         .result-card {
             padding: 1.25rem 1.4rem;
             border-radius: 12px;
-            margin-top: 0.75rem;
+            margin-top: 0.85rem;
             margin-bottom: 1rem;
             border-left: 6px solid;
         }
@@ -80,7 +78,7 @@ st.markdown(
             padding-top: 1rem;
             border-top: 1px solid rgba(128, 128, 128, 0.25);
             font-size: 0.88rem;
-            opacity: 0.85;
+            opacity: 0.88;
             text-align: center;
         }
     </style>
@@ -90,16 +88,13 @@ st.markdown(
 
 
 @st.cache_resource
-def load_artifacts():
+def load_models():
     sms_pipe = joblib.load(SMS_MODEL_PATH)
     url_pipe = joblib.load(URL_MODEL_PATH)
-    meta = {}
-    if META_PATH.exists():
-        meta = json.loads(META_PATH.read_text(encoding="utf-8"))
-    return sms_pipe, url_pipe, meta
+    return sms_pipe, url_pipe
 
 
-def score_sms(text: str, model, low_th: float = 0.35, high_th: float = 0.65) -> dict:
+def analyze_message(text: str, model, low_th: float = 0.35, high_th: float = 0.65) -> dict:
     msg = text.strip()
     proba = float(model.predict_proba([msg])[0, 1])
 
@@ -153,7 +148,7 @@ def score_sms(text: str, model, low_th: float = 0.35, high_th: float = 0.65) -> 
     }
 
 
-def score_url(raw_url: str, model, low_th: float = 0.35, high_th: float = 0.65) -> dict:
+def analyze_link(raw_url: str, model, low_th: float = 0.35, high_th: float = 0.65) -> dict:
     cleaned = raw_url.strip()
     parse_target = cleaned if re.match(r"^[a-zA-Z][a-zA-Z0-9+.-]*://", cleaned) else f"http://{cleaned}"
     feats_dict = extract_url_lexical_features(parse_target)
@@ -242,8 +237,9 @@ with st.sidebar:
 
     st.markdown("---")
     st.markdown(f"### Created by {CREATOR_NAME}")
-    st.write(f"[Portfolio]({PORTFOLIO_URL}) · [LinkedIn]({LINKEDIN_URL})")
-    st.write(f"Email: `{CONTACT_EMAIL}`")
+    st.write(f"🌐 [Portfolio]({PORTFOLIO_URL})")
+    st.write(f"💼 [LinkedIn]({LINKEDIN_URL})")
+    st.write(f"✉️ [{CONTACT_EMAIL}](mailto:{CONTACT_EMAIL})")
 
 
 # --- Hero Banner ---
@@ -258,7 +254,7 @@ st.markdown(
 )
 
 try:
-    sms_model, url_model, _ = load_artifacts()
+    sms_model, url_model = load_models()
 except Exception:
     st.error("We're having trouble loading the safety checker right now. Please refresh or try again shortly.")
     st.stop()
@@ -287,7 +283,7 @@ with tab_sms:
         if not sms_input.strip():
             st.warning("Paste a message above first so I can check it for you.")
         else:
-            render_result(score_sms(sms_input, sms_model))
+            render_result(analyze_message(sms_input, sms_model))
 
 with tab_url:
     st.subheader("Paste a Website Link")
@@ -310,16 +306,16 @@ with tab_url:
         if not url_input.strip():
             st.warning("Paste a website link above first so I can check it for you.")
         else:
-            render_result(score_url(url_input, url_model))
+            render_result(analyze_link(url_input, url_model))
 
 # --- Clean Footer ---
 st.markdown(
     f"""
     <div class="footer-note">
-        Built by <strong>Abdulmalik Tajudeen</strong> ·
-        <a href=""https://abdulmalik-ade.github.io"" target="_blank">Portfolio</a> ·
-        <a href="https://www.linkedin.com/in/abdulmalik-tajudeen-86602b38b/" target="_blank">LinkedIn</a> ·
-        <a href="mailto:abdulmaliktajudeen5@gmail.com">{CONTACT_EMAIL}</a>
+        Built by <strong>{CREATOR_NAME}</strong> ·
+        <a href="{PORTFOLIO_URL}" target="_blank">Portfolio</a> ·
+        <a href="{LINKEDIN_URL}" target="_blank">LinkedIn</a> ·
+        <a href="mailto:{CONTACT_EMAIL}">{CONTACT_EMAIL}</a>
     </div>
     """,
     unsafe_allow_html=True,
