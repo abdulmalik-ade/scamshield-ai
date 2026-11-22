@@ -3,6 +3,7 @@ from pathlib import Path
 import joblib
 import pandas as pd
 import streamlit as st
+import tldextract
 from url_features import LEXICAL_FEATURE_COLS, extract_url_lexical_features
 
 st.set_page_config(
@@ -21,6 +22,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 MODELS_DIR = BASE_DIR / "models"
 SMS_MODEL_PATH = MODELS_DIR / "scamshield_sms_model.joblib"
 URL_MODEL_PATH = MODELS_DIR / "scamshield_url_model.joblib"
+
+_NO_FETCH_EXTRACT = tldextract.TLDExtract(suffix_list_urls=None)
+
+SUSPICIOUS_TLDS = {
+    "xyz", "top", "tk", "ml", "ga", "cf", "gq", "buzz", "click", "link", "work", "support", "rest", "icu"
+}
+PHISHING_URL_KEYWORDS = re.compile(
+    r"(?:verify|login|signin|update|secure|account|bvn|nin|wallet|billing|auth|confirm|suspend|webscr|password)",
+    re.IGNORECASE,
+)
 
 st.markdown(
     """
@@ -153,21 +164,59 @@ def analyze_link(raw_url: str, model, low_th: float = 0.35, high_th: float = 0.6
     parse_target = cleaned if re.match(r"^[a-zA-Z][a-zA-Z0-9+.-]*://", cleaned) else f"http://{cleaned}"
     feats_dict = extract_url_lexical_features(parse_target)
     feats_df = pd.DataFrame([feats_dict])[LEXICAL_FEATURE_COLS]
-    proba = float(model.predict_proba(feats_df)[0, 1])
+    raw_proba = float(model.predict_proba(feats_df)[0, 1])
 
+    ext = _NO_FETCH_EXTRACT(parse_target)
+    reg_domain = f"{ext.domain}.{ext.suffix}".lower() if ext.domain and ext.suffix else ""
+    tld_lower = (ext.suffix or "").split(".")[-1].lower()
+    domain_hyphens = (ext.domain or "").count("-")
+    has_query_or_params = (feats_dict["NoOfEqualsInURL"] + feats_dict["NoOfQMarkInURL"] + feats_dict["NoOfAmpersandInURL"]) > 0
+    has_phish_words = bool(PHISHING_URL_KEYWORDS.search(parse_target))
+
+    # Collect genuine structural risk indicators
     findings = []
+    risk_signals = 0
+
     if not cleaned.lower().startswith("https://"):
         findings.append("Does not use https:// (or the web address was entered without https://).")
+        risk_signals += 1
     if feats_dict["IsDomainIP"] == 1:
         findings.append("Uses raw numbers (an IP address) instead of a normal website name.")
-    if feats_dict["URLLength"] >= 60:
+        risk_signals += 2
+    if feats_dict["URLLength"] >= 55:
         findings.append("The web address is unusually long.")
+        risk_signals += 1
     if feats_dict["NoOfSubDomain"] >= 2:
         findings.append("Has extra chained sub-addresses (subdomains) before the main name.")
-    if feats_dict["NoOfDegitsInURL"] >= 4:
+        risk_signals += 2
+    if domain_hyphens >= 2:
+        findings.append("Uses multiple hyphens in the main website name, common in lookalike links.")
+        risk_signals += 1
+    if feats_dict["NoOfDegitsInURL"] >= 3:
         findings.append("Contains several numbers inside the link.")
+        risk_signals += 1
     if feats_dict["HasObfuscation"] == 1:
         findings.append("Contains encoded or unusual symbols (% or @) often used to mask destinations.")
+        risk_signals += 2
+    if has_query_or_params:
+        findings.append("Contains tracking or session parameters (?, =, &) in the link.")
+        risk_signals += 1
+    if tld_lower in SUSPICIOUS_TLDS:
+        findings.append(f"Uses a domain ending (.{tld_lower}) frequently seen in disposable or scam sites.")
+        risk_signals += 1
+    if has_phish_words:
+        findings.append("Includes login, verification, or account-action wording inside the web address.")
+        risk_signals += 1
+
+    # Calibrate against canonical https://www.<registered_domain> when the URL uses HTTPS
+    # and exhibits zero structural red flags (eliminates false alarms on clean apex/subdomain URLs)
+    proba = raw_proba
+    if cleaned.lower().startswith("https://") and risk_signals == 0 and reg_domain:
+        canonical_url = f"https://www.{reg_domain}"
+        canon_feats = pd.DataFrame([extract_url_lexical_features(canonical_url)])[LEXICAL_FEATURE_COLS]
+        canon_proba = float(model.predict_proba(canon_feats)[0, 1])
+        proba = min(raw_proba, canon_proba)
+
     if not findings:
         findings.append("The structure of the web address looks straightforward.")
 
@@ -177,7 +226,7 @@ def analyze_link(raw_url: str, model, low_th: float = 0.35, high_th: float = 0.6
         summary = "The structure of this link matches patterns commonly seen in phishing or deceptive URLs."
         confidence = proba * 100
         tip = "Avoid logging in or entering card, bank, BVN, or NIN details here. Open the official website on your own instead."
-        note = "This check inspects the link text alone without visiting the page—short main domains without 'www.' can occasionally be flagged."
+        note = "This check inspects the link text alone without visiting the page."
     elif proba >= low_th:
         tier = "mid"
         headline = "Uncertain Link — Double-Check Before Opening"
