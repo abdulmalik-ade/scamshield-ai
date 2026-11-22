@@ -316,7 +316,7 @@ with tab_url:
 st.markdown(
     f"""
     <div class="footer-note">
-        Built by <strong>Abdulmalik Tajudeen}</strong> ·
+        Built by <strong>Abdulmalik Tajudeen</strong> ·
         <a href="abdulmalik-ade.github.io" target="_blank">Portfolio</a> ·
         <a href="https://www.linkedin.com/in/abdulmalik-tajudeen-86602b38b/" target="_blank">LinkedIn</a> ·
         <a href="mailto:abdulmaliktajudeen5@gmail.com">{CONTACT_EMAIL}</a>
