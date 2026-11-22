@@ -13,8 +13,8 @@ st.set_page_config(
 )
 
 # --- Creator Contact Details (Update these with your live links) ---
-CREATOR_NAME = "Abdulmalik Tajudeen"
-PORTFOLIO_URL = "https://abdulmalik-ade.github.io"
+CREATOR_NAME = "Abdulmalik"
+PORTFOLIO_URL = "https://github.com/abdulmalik-ade.github.io"
 LINKEDIN_URL = "https://www.linkedin.com/in/abdulmalik-tajudeen-86602b38b/"
 #CONTACT_EMAIL = "abdulmalik@example.com"
 
@@ -317,9 +317,9 @@ st.markdown(
     f"""
     <div class="footer-note">
         Built by <strong>Abdulmalik Tajudeen</strong> ·
-        <a href="https://github.com/abdulmalik-ade.github.io" target="_blank">Portfolio</a> ·
+        <a href=""https://abdulmalik-ade.github.io"" target="_blank">Portfolio</a> ·
         <a href="https://www.linkedin.com/in/abdulmalik-tajudeen-86602b38b/" target="_blank">LinkedIn</a> ·
-        <a href="mailto:abdulmaliktajudeen5@gmail">{CONTACT_EMAIL}</a>
+        <a href="mailto:abdulmaliktajudeen5@gmail.com">{CONTACT_EMAIL}</a>
     </div>
     """,
     unsafe_allow_html=True,
