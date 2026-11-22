@@ -13,10 +13,10 @@ st.set_page_config(
 )
 
 # --- Creator Contact Details (Update these with your live links) ---
-CREATOR_NAME = "Abdulmalik"
-PORTFOLIO_URL = "https://github.com/abdulmalik-ade"
+CREATOR_NAME = "Abdulmalik Tajudeen"
+PORTFOLIO_URL = "https://github.com/abdulmalik-ade.github.io"
 LINKEDIN_URL = "https://www.linkedin.com"
-CONTACT_EMAIL = "abdulmalik@example.com"
+#CONTACT_EMAIL = "abdulmalik@example.com"
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 MODELS_DIR = BASE_DIR / "models"
@@ -237,7 +237,7 @@ def render_result(res: dict):
 with st.sidebar:
     st.markdown("### 🛡️ Quick Safety Reminders")
     st.write("- Banks and telecoms won't ask for your PIN, OTP, BVN, or NIN via a random link.")
-    st.write("- Be extra careful with urgent 'account blocked' or 'you won a prize' alerts.")
+    st.write("- Be extra careful with urgent "account blocked" or "you won a prize" alerts.")
     st.write("- When in doubt, open your official app or browser directly.")
 
     st.markdown("---")
@@ -317,9 +317,9 @@ st.markdown(
     f"""
     <div class="footer-note">
         Built by <strong>Abdulmalik Tajudeen</strong> ·
-        <a href="abdulmalik-ade.github.io" target="_blank">Portfolio</a> ·
+        <a href="https://github.com/abdulmalik-ade.github.io" target="_blank">Portfolio</a> ·
         <a href="https://www.linkedin.com/in/abdulmalik-tajudeen-86602b38b/" target="_blank">LinkedIn</a> ·
-        <a href="mailto:abdulmaliktajudeen5@gmail.com">{CONTACT_EMAIL}</a>
+        <a href="mailto:CONTACT_EMAIL">abdulmaliktajudeen5@gmail.com</a>
     </div>
     """,
     unsafe_allow_html=True,
