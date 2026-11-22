@@ -14,8 +14,8 @@ st.set_page_config(
 
 # --- Creator Contact Details (Update these with your live links) ---
 CREATOR_NAME = "Abdulmalik Tajudeen"
-PORTFOLIO_URL = "https://github.com/abdulmalik-ade.github.io"
-LINKEDIN_URL = "https://www.linkedin.com"
+PORTFOLIO_URL = "https://abdulmalik-ade.github.io"
+LINKEDIN_URL = "https://www.linkedin.com/in/abdulmalik-tajudeen-86602b38b/"
 #CONTACT_EMAIL = "abdulmalik@example.com"
 
 BASE_DIR = Path(__file__).resolve().parent.parent
