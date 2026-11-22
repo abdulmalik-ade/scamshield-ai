@@ -319,7 +319,7 @@ st.markdown(
         Built by <strong>Abdulmalik Tajudeen</strong> ·
         <a href="https://github.com/abdulmalik-ade.github.io" target="_blank">Portfolio</a> ·
         <a href="https://www.linkedin.com/in/abdulmalik-tajudeen-86602b38b/" target="_blank">LinkedIn</a> ·
-        <a href="mailto:CONTACT_EMAIL">abdulmaliktajudeen5@gmail.com</a>
+        <a href="mailto:abdulmaliktajudeen5@gmail">abdulmaliktajudeen5@gmail.com</a>
     </div>
     """,
     unsafe_allow_html=True,
