@@ -247,17 +247,16 @@ Model confidence describes the model's assessment under its learned patterns. It
 scamshield-ai/
 │
 ├── models/
+│   ├── scamshield_metadata.json
 │   ├── scamshield_sms_model.joblib
-│   ├── scamshield_url_model.joblib
-│   └── scamshield_metadata.json
+│   └── scamshield_url_model.joblib
 │
 ├── streamlit_app/
 │   ├── app.py
-│   ├── url_features.py
-│   └── requirements.txt
+│   ├── requirements.txt
+│   └── url_features.py
 │
-├── assets/
-│   └── scamshield-url-check.png
+├──  scamshield-url-check.png
 │
 └── README.md
 ```
