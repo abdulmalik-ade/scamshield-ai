@@ -16,7 +16,7 @@ The application combines two independently trained machine learning models in on
 
 ### Phishing URL Detection Interface
 
-![ScamShield AI phishing URL detection interface](assets/scamshield-url-check.png)
+![ScamShield AI phishing URL detection interface](scamshield-url-check.png)
 
 The URL detection interface allows users to submit a website address and examine its structure for common phishing-related warning signs. The application presents a risk assessment, model confidence, observations, and recommended safety actions.
 
