@@ -20,8 +20,6 @@ The application combines two independently trained machine learning models in on
 
 The URL detection interface allows users to submit a website address and examine its structure for common phishing-related warning signs. The application presents a risk assessment, model confidence, observations, and recommended safety actions.
 
-> **Screenshot setup:** Create an `assets` folder in the repository and upload the application screenshot using the filename `scamshield-url-check.png`. Then this image will display automatically in the README.
-
 ---
 
 ## 🎯 The Problem
